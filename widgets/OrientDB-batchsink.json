@@ -38,15 +38,6 @@
         }
       ]
     }
-  ],
-  "outputs": [
-    {
-      "widget-type": "non-editable-schema-editor",
-      "schema": {
-        "vertex": "string",
-        "edge": "string"
-      }
-    }
   ]
 }
 
