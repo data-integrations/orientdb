@@ -48,11 +48,11 @@ public class OrientDBConfig extends PluginConfig {
   private String password;
 
   @Name(VERTEX)
-  @Description("Column Name corresponding to Vertex Type")
+  @Description("Column Name corresponding to Vertex Type. This column should be of String type.")
   private String vertexType;
 
   @Name(EDGE)
-  @Description("Column Name corresponding to Edge Type")
+  @Description("Column Name corresponding to Edge Type. This column should be an array of String type.")
   private String edgeType;
 
   public String getReferenceName() {

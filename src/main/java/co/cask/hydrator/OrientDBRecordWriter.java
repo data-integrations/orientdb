@@ -17,7 +17,6 @@
 package co.cask.hydrator;
 
 import co.cask.cdap.api.data.format.StructuredRecord;
-import com.google.common.base.Splitter;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
 * {@link RecordWriter} for {@link OrientDBSink}.
@@ -69,8 +69,7 @@ public class OrientDBRecordWriter extends RecordWriter<NullWritable, StructuredR
 
     String sourceVertexValue = value.get(vertexName);
     Vertex sourceVertex = getOrCreateVertex(sourceVertexValue);
-    String edges = value.get(edgeName);
-    Iterable<String> connections = Splitter.on(":").omitEmptyStrings().trimResults().split(edges);
+    List<String> connections = value.get(edgeName);
     for (String connection : connections) {
       boolean addEdge = true;
       Vertex destinationVertex = getOrCreateVertex(connection);

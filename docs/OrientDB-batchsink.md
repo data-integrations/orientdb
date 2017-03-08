@@ -15,11 +15,15 @@ Properties
 
 **referenceName:** Reference Name for OrientDB Sink.
 
-**createIfNotExists:** Whether to create the FileSet if it does not exist. Defaults to false.
+**connectionString:** Connection String that will be used to connect to OrientDB.
 
-**deleteInputOnSuccess:** Whether to delete the data read if the pipeline run succeeded. Defaults to false.
+**username:** Username for the Database.
 
-**files:** A comma separated list of files in the FileSet to read. Macro enabled.
+**password:** Password for the Database.
+
+**vertex:** Column Name corresponding to Vertex Type. This column should be of String type.
+
+**edge:** Column Name corresponding to Edge Type. This column should be an array of String type.
 
 Example
 -------

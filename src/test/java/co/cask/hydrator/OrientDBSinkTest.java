@@ -82,7 +82,7 @@ public class OrientDBSinkTest extends HydratorTestBase {
     ETLStage source = new ETLStage("source", MockSource.getPlugin(inputName));
     Map<String, String> sinkProperties = new HashMap<>();
     sinkProperties.put(OrientDBConfig.REFERENCE_NAME, "orientdb");
-    sinkProperties.put(OrientDBConfig.CONNECTION_STRING, "remote:localhost:2424/More");
+    sinkProperties.put(OrientDBConfig.CONNECTION_STRING, "remote:localhost:2424/Dyna");
     sinkProperties.put(OrientDBConfig.USERNAME, "root");
     sinkProperties.put(OrientDBConfig.PASSWORD, "password");
     sinkProperties.put(OrientDBConfig.VERTEX, vertexType);
@@ -103,15 +103,15 @@ public class OrientDBSinkTest extends HydratorTestBase {
     // write the input
     Schema inputSchema = Schema.recordOf("schema",
                                          Schema.Field.of(vertexType, Schema.of(Schema.Type.STRING)),
-                                         Schema.Field.of(edgeType, Schema.of(Schema.Type.STRING)));
+                                         Schema.Field.of(edgeType, Schema.arrayOf(Schema.of(Schema.Type.STRING))));
     DataSetManager<Table> inputManager = getDataset(inputName);
     List<StructuredRecord> inputRecords = new ArrayList<>();
     inputRecords.add(StructuredRecord.builder(inputSchema)
                        .set(vertexType, "Jon")
-                       .set(edgeType, "Nitin:Vikram").build());
+                       .set(edgeType, new String[] {"Nitin", "Vikram"}).build());
     inputRecords.add(StructuredRecord.builder(inputSchema)
                        .set(vertexType, "Nitin")
-                       .set(edgeType, "Vikram:Sree").build());
+                       .set(edgeType, new String[] {"Vikram", "Sree"}).build());
     MockSource.writeInput(inputManager, inputRecords);
 
     WorkflowManager workflowManager = appManager.getWorkflowManager(SmartWorkflow.NAME);
