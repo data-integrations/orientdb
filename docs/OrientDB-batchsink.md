@@ -6,7 +6,6 @@ Writes data to OrientDB database. It uses the [Graph API](http://orientdb.com/do
 
 > NOTE : This is a very early version and doesn't have all the functionlities exposed from OrientDB. 
 
-
 ## Plugin Configuration
 
 | Configuration | Required | Default | Description |
