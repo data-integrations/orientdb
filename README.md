@@ -4,8 +4,8 @@ This plugin writes records into [OrientDB](http://orientdb.com/orientdb/). It us
 
 Writes data to OrientDB database. It uses the [Graph API](http://orientdb.com/docs/2.2/Graph-Database-Tinkerpop.html) of OrientDB to create vertices and edges between the vertices. 
 
-## Status 
-**BETA** 
+> NOTE : This is a very early version and doesn't have all the functionlities exposed from OrientDB. 
+
 
 ## Plugin Configuration
 
@@ -21,6 +21,7 @@ Writes data to OrientDB database. It uses the [Graph API](http://orientdb.com/do
 ## Limitation
 
 * Currently, this plugin does not support the full functionality of OrientDB. 
+* It also only supports running in batch mode. 
 
 ## Usage Notes
 
