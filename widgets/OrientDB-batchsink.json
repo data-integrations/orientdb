@@ -28,12 +28,12 @@
         },
         {
           "widget-type": "textbox",
-          "label": "VertexType Column",
+          "label": "Vertex Column Name",
           "name" : "vertex"
         },
         {
           "widget-type": "textbox",
-          "label": "EdgeType Column",
+          "label": "Edge Column Name",
           "name" : "edge"
         }
       ]
