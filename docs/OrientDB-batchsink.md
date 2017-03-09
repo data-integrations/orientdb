@@ -1,48 +1,30 @@
 # OrientDB Batch Sink
 
-Description
------------
+This plugin writes records into [OrientDB](http://orientdb.com/orientdb/). It uses the Graph API
 
-Writes data to an OrientDB database.
+Writes data to OrientDB database. It uses the [Graph API](http://orientdb.com/docs/2.2/Graph-Database-Tinkerpop.html) of OrientDB to create vertices and edges between the vertices. 
 
-Use Case
---------
+> NOTE : This is a very early version and doesn't have all the functionlities exposed from OrientDB. 
 
-This sink is used whenever you want to write to OrientDB.
 
-Properties
-----------
+## Plugin Configuration
 
-**referenceName:** Reference Name for OrientDB Sink.
+| Configuration | Required | Default | Description |
+| :------------ | :------: | :----- | :---------- |
+| **Connection String** | **Y** | N/A | This configuration specifies the orient db server endpoint to ingest into. |
+| **Row Key** | **Y** | N/A | Specifies how unique key needs to be generated. This can be an expression. |
+| **User Name** | **Y** | N/A | If OrientDB is configured in secured mode with authentication turned on, then specify the user name to be used when connecting to OrientDB |
+| **Password** | **Y** | N/A | Specifies the password for the realm specified above. |
+| **Vertex Column Name** | **Y** | N/A | Specifies the name of the input column name that should be used considered as a vertices for the graph |
+| **Edge Column Name** | **Y** | N/A | Specifies the name of the input column name that should be used for defining the edge between the vertices |
 
-**connectionString:** Connection String that will be used to connect to OrientDB.
+## Limitation
 
-**username:** Username for the Database.
+* Currently, this plugin does not support the full functionality of OrientDB. 
+* It also only supports running in batch mode. 
 
-**password:** Password for the Database.
+## Usage Notes
 
-**vertex:** Column Name corresponding to Vertex Type. This column should be of String type.
+This plugin uses one of the columns of the input record field as the 'vertex' descriptor and the edges from the vertex are represented by another column of the input record. User has the option to pick up the ability to pick the fields that represent these two concepts. 
 
-**edge:** Column Name corresponding to Edge Type. This column should be an array of String type.
-
-Example
--------
-
-This example writes to "Test" OrientDB database. "person" column is used as Vertex key and "friend" column is used as
-edge name to create outward edges from "person" vertex to all vertices in the "friend" column. Vertices and Edges are
-created only if they don't already exist. Vertex Type of "person" and Edge Type "friend" are also created if they
-don't exist already:
-
-    {
-        "name": "OrientDB",
-        "type": "batchsink",
-        "properties": {
-            "referenceName": "orientdbtest",
-            "connectionString": "remote:localhost:2424/Test",
-            "username": "root",
-            "password": "****",
-            "vertexType": "person",
-            "edgeType": "friend"
-        }
-    }
-
+> Vertices and Edges between them are created only if they don't exist already.
