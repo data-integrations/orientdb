@@ -1,6 +1,6 @@
 # OrientDB Batch Sink
 
-<a href="https://cdap-users.herokuapp.com/"><img alt="Join CDAP community" src="https://cdap-users.herokuapp.com/badge.svg?t=1"/></a> [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+<img src="https://cdap-users.herokuapp.com/assets/cm-available.svg"/> <img src="https://cdap-users.herokuapp.com/assets/cdap-batch-sink.svg"/> <img src="https://cdap-users.herokuapp.com/assets/cdap-realtime-sink.svg"/> <a href="https://cdap-users.herokuapp.com/"><img alt="Join CDAP community" src="https://cdap-users.herokuapp.com/badge.svg?t=1"/></a> [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 This plugin writes records into [OrientDB](http://orientdb.com/orientdb/). It uses the Graph API
 
