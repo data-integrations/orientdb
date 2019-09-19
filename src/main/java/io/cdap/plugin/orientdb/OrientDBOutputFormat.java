@@ -14,9 +14,9 @@
  * the License.
  */
 
-package co.cask.hydrator;
+package io.cdap.plugin.orientdb;
 
-import co.cask.cdap.api.data.format.StructuredRecord;
+import io.cdap.cdap.api.data.format.StructuredRecord;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.OutputCommitter;
