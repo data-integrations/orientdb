@@ -14,11 +14,11 @@
  * the License.
  */
 
-package co.cask.hydrator;
+package io.cdap.plugin.orientdb;
 
-import co.cask.cdap.api.annotation.Description;
-import co.cask.cdap.api.annotation.Name;
-import co.cask.cdap.api.plugin.PluginConfig;
+import io.cdap.cdap.api.annotation.Description;
+import io.cdap.cdap.api.annotation.Name;
+import io.cdap.cdap.api.plugin.PluginConfig;
 
 /**
 * {@link PluginConfig} for {@link OrientDBSink}.

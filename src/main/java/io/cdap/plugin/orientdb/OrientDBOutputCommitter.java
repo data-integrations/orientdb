@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.hydrator;
+package io.cdap.plugin.orientdb;
 
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.OutputCommitter;
