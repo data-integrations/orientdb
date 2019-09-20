@@ -16,20 +16,22 @@
 
 package io.cdap.plugin.orientdb;
 
+import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.annotation.Plugin;
 import io.cdap.cdap.api.data.batch.Output;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
+import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.Emitter;
+import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSinkContext;
 import io.cdap.plugin.common.batch.ConfigurationUtils;
 import io.cdap.plugin.common.batch.JobUtils;
-import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Job;
@@ -59,6 +61,12 @@ public class OrientDBSink extends BatchSink<StructuredRecord, NullWritable, Stru
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
     super.configurePipeline(pipelineConfigurer);
+
+    FailureCollector failureCollector = pipelineConfigurer.getStageConfigurer().getFailureCollector();
+    Schema inputSchema = pipelineConfigurer.getStageConfigurer().getInputSchema();
+    conf.validate(failureCollector, inputSchema);
+    conf.validateDBConnection(failureCollector);
+    failureCollector.getOrThrowException();
   }
 
   @Override
