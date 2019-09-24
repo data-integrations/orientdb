@@ -16,9 +16,13 @@
 
 package io.cdap.plugin.orientdb;
 
+import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Name;
+import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.plugin.PluginConfig;
+import io.cdap.cdap.etl.api.FailureCollector;
+import io.cdap.plugin.common.IdUtils;
 
 /**
 * {@link PluginConfig} for {@link OrientDBSink}.
@@ -55,6 +59,25 @@ public class OrientDBConfig extends PluginConfig {
   @Description("Column Name corresponding to Edge Type. This column should be an array of String type.")
   private String edgeType;
 
+  public OrientDBConfig(String referenceName, String connectionString,
+                        String username, String password, String vertexType, String edgeType) {
+    this.referenceName = referenceName;
+    this.connectionString = connectionString;
+    this.username = username;
+    this.password = password;
+    this.vertexType = vertexType;
+    this.edgeType = edgeType;
+  }
+
+  private OrientDBConfig(Builder builder) {
+    this.referenceName = builder.referenceName;
+    this.connectionString = builder.connectionString;
+    this.username = builder.username;
+    this.password = builder.password;
+    this.vertexType = builder.vertexType;
+    this.edgeType = builder.edgeType;
+  }
+
   public String getReferenceName() {
     return referenceName;
   }
@@ -77,5 +100,135 @@ public class OrientDBConfig extends PluginConfig {
 
   public String getEdgeType() {
     return edgeType;
+  }
+
+  public void validate(FailureCollector failureCollector, Schema inputSchema) {
+    try {
+      IdUtils.validateId(referenceName);
+    } catch (IllegalArgumentException ex) {
+      failureCollector.addFailure(ex.getMessage(), null).withConfigProperty(REFERENCE_NAME);
+    }
+
+    Schema.Field vertexField = inputSchema.getField(vertexType);
+    if (vertexField == null) {
+      failureCollector.addFailure(String.format("Field '%s' is not present in input schema.", vertexType),
+                                  null).withConfigProperty(VERTEX)
+        .withInputSchemaField(VERTEX, null);
+    } else {
+      Schema vertexFieldSchema = vertexField.getSchema();
+
+      if (vertexFieldSchema.isNullable()) {
+        vertexFieldSchema = vertexFieldSchema.getNonNullable();
+      }
+
+      if (vertexFieldSchema.getLogicalType() != null || vertexFieldSchema.getType() != Schema.Type.STRING) {
+        failureCollector.addFailure(String.format("Field '%s' must be of type 'string' but is of type '%s'.",
+                                                  vertexField.getName(), vertexFieldSchema.getDisplayName()),
+                                    null).withConfigProperty(VERTEX)
+          .withInputSchemaField(VERTEX, null);
+      }
+    }
+
+    Schema.Field edgeField = inputSchema.getField(edgeType);
+    if (edgeField == null) {
+      failureCollector.addFailure(String.format("Field '%s' is not present in input schema.", edgeType),
+                                  null).withConfigProperty(EDGE)
+        .withInputSchemaField(EDGE, null);
+    } else {
+      Schema edgeFieldSchema = edgeField.getSchema();
+
+      if (edgeFieldSchema.isNullable()) {
+        edgeFieldSchema = edgeFieldSchema.getNonNullable();
+      }
+
+      Schema componentSchema = (edgeFieldSchema != null && edgeFieldSchema.getType() == Schema.Type.ARRAY) ?
+        edgeFieldSchema.getComponentSchema() : null;
+
+      if (componentSchema != null && componentSchema.isNullable()) {
+        componentSchema = componentSchema.getNonNullable();
+      }
+
+      if (componentSchema == null || componentSchema.getLogicalType() != null ||
+        componentSchema.getType() != Schema.Type.STRING) {
+        failureCollector.addFailure(String.format("Field '%s' must be of type 'array of string' but is of type '%s'.",
+                                                  edgeField.getName(), edgeFieldSchema.getDisplayName()),
+                                    null).withConfigProperty(EDGE)
+          .withInputSchemaField(EDGE);
+      }
+    }
+  }
+
+  public void validateDBConnection(FailureCollector failureCollector) {
+    try {
+      new OrientGraph(connectionString, username, password);
+    } catch (Exception ex) {
+      failureCollector.addFailure(String.format("Cannot authenticate to '%s' with user name and password '%s':'%s'",
+                                                connectionString, username, password), null)
+        .withStacktrace(ex.getStackTrace())
+        .withConfigProperty(CONNECTION_STRING)
+        .withConfigProperty(USERNAME)
+        .withConfigProperty(PASSWORD);
+    }
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(OrientDBConfig copy) {
+    return new Builder()
+      .setReferenceName(copy.getReferenceName())
+      .setConnectionString(copy.getConnectionString())
+      .setUsername(copy.getUsername())
+      .setPassword(copy.getPassword())
+      .setVertexType(copy.getVertexType())
+      .setEdgeType(copy.getEdgeType());
+  }
+
+  public static final class Builder {
+    private String referenceName;
+    private String connectionString;
+    private String username;
+    private String password;
+    private String vertexType;
+    private String edgeType;
+
+
+    private Builder() {
+    }
+
+    public Builder setReferenceName(String referenceName) {
+      this.referenceName = referenceName;
+      return this;
+    }
+
+    public Builder setConnectionString(String connectionString) {
+      this.connectionString = connectionString;
+      return this;
+    }
+
+    public Builder setUsername(String username) {
+      this.username = username;
+      return this;
+    }
+
+    public Builder setPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public Builder setVertexType(String vertexType) {
+      this.vertexType = vertexType;
+      return this;
+    }
+
+    public Builder setEdgeType(String edgeType) {
+      this.edgeType = edgeType;
+      return this;
+    }
+
+    public OrientDBConfig build() {
+      return new OrientDBConfig(this);
+    }
   }
 }
